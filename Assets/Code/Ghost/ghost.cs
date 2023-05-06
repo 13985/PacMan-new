@@ -109,15 +109,15 @@ public abstract class ghost:entity,Ighost{
     public delegate bool Comparator(GameObject node);
     
     [SerializeField]protected int searchRange;//used in pathfinding
-    [SerializeField]protected int respawnDirection;
-    protected bool isEdible=false,pacmanFound;
+    [SerializeField]protected int respawnDirection;//used in respawn
+    protected bool isEdible=false,pacmanFound; //used when energizers are eaten
     protected int respawnTime;
 
     [Header("sprites")]
     [SerializeField]protected Sprite bodyNormal;
     [Header("SpriteRenderer")]
-    [SerializeField]protected SpriteRenderer eyesRenderer;
-    [SerializeField]protected SpriteRenderer bodyRenderer;
+    [SerializeField]protected SpriteRenderer eyesRenderer; //used for animation of eyes
+    [SerializeField]protected SpriteRenderer bodyRenderer; //used for animation of body movement
 
 
     private Dictionary<GameObject,int> visited=new Dictionary<GameObject,int>();
@@ -131,7 +131,7 @@ public abstract class ghost:entity,Ighost{
         direction=respawnDirection;
         speed=speedNormal;
         respawnTime=10*manager.frameRate;
-    }
+    }//general start() method, each ghost will have their own start() method
     
     //check whether the ghost can move in update()
     protected bool CanUpdate(){
@@ -194,7 +194,7 @@ public abstract class ghost:entity,Ighost{
         else{
             return directionChoices[Random.Range(0,j)];
         }
-    }
+    }//decide to movement of ghosts before seeing pacman
 
     //some ghost may have different change when levelup, so virtual function
     public override void LevelUp(){
@@ -230,20 +230,20 @@ public abstract class ghost:entity,Ighost{
         bodyRenderer.sprite=bodyAfraid;
         speed=speedNormal;
         isEdible=true;
-    }
+    }//set the ghost to be edible after energizer is eaten
 
 
     public void UnsetEdible(){
         eyesRenderer.enabled=true;
         bodyRenderer.sprite=bodyNormal;
         isEdible=false;
-    }
+    }//set the ghost to be unedible after energizer time is used up
 
     protected override void Restart(){
         base.Restart();
         UnsetEdible();
         direction=respawnDirection;
-    }
+    }// reset the state of ghosts
 
 
     //return the direction the ghost should follow
